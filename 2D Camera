@@ -1,0 +1,31 @@
+local players = game:GetService('Players')
+local plr = players.LocalPlayer
+local runService = game:GetService('RunService')
+local camera = workspace.CurrentCamera
+local character = nil
+
+plr.CharacterAdded:Connect(function()
+	if not plr.Character then
+		repeat
+			task.wait()
+		until plr.Character
+	end
+	character = plr.Character
+end)
+
+character = plr.Character
+
+camera.CameraType = Enum.CameraType.Scriptable
+
+runService:BindToRenderStep('Camera',100000,function()
+	if character then
+		local root = character:FindFirstChild('HumanoidRootPart')
+		if root then
+			if math.abs(root.Position.X) >= .05 then
+				local cf = character:GetPivot()
+				character:PivotTo(CFrame.new(cf.Position*Vector3.new(0,1,1))*cf.Rotation)
+			end
+			camera.CFrame = CFrame.new(root.Position+Vector3.new(30,5,0),root.Position)
+		end
+	end
+end)
